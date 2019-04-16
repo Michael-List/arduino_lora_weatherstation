@@ -7,6 +7,7 @@
 #define IIC_ADDR uint8_t(0x76) // Address of BME680 sensor
 Seeed_BME680 bme680(IIC_ADDR); // IIC PROTOCOL
 SI114X SI1145 = SI114X(); // Sunlight sensor
+int sensorPin = A0; // Moisture sensor
 
 void setup() {
 // For debugging
@@ -49,6 +50,8 @@ void loop() {
   LoRa.print(SI1145.ReadIR()); // Infrared light in lm
   LoRa.print(";");
   LoRa.print((float)SI1145.ReadUV()/100); // Ultraviolet light in lm
+  LoRa.print(";");
+  LoRa.print(analogRead(sensorPin)); // Analog moisture sensor. Values between 0 - 1023
   LoRa.print(";");
   LoRa.endPacket();
 
