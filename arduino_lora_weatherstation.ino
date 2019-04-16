@@ -7,14 +7,15 @@
 #define IIC_ADDR uint8_t(0x76) // Address of BME680 sensor
 Seeed_BME680 bme680(IIC_ADDR); // IIC PROTOCOL
 SI114X SI1145 = SI114X(); // Sunlight sensor
-int sensorPin = A0; // Moisture sensor
+static int sensorPin = A0; // Moisture sensor
+static int frequency = 868300000; // For the frequency you are allowed to use in your country look at: https://www.thethingsnetwork.org/docs/lorawan/frequency-plans.html
 
 void setup() {
 // For debugging
 //  Serial.begin(9600);
 //  while (!Serial);
 
-  while (!LoRa.begin(868300000)) {
+  while (!LoRa.begin(frequency)) {
 //  If init failed, wait and try again
     delay(10000);
   }
