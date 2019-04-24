@@ -10,6 +10,20 @@ SI114X SI1145 = SI114X(); // Sunlight sensor
 static int sensorPin = A0; // Moisture sensor
 static int frequency = 868300000; // For the frequency you are allowed to use in your country look at: https://www.thethingsnetwork.org/docs/lorawan/frequency-plans.html
 
+// Sensor data
+float temperature;
+float pressure;
+float humidity;
+float visibleLight;
+float irLight;
+float uvLight;
+int moisture;
+
+// Other vars
+static int SENDXTIMES = 3;
+static int SLEEPTIME = 5000; // Sleeptime in ms
+static char STATIONID[] = "01";
+
 void setup() {
 // For debugging
 //  Serial.begin(9600);
@@ -32,29 +46,43 @@ void setup() {
 }
 
 void loop() {
+  // Collect sensor data
   if (bme680.read_sensor_data()) {
 //  Failed to perform reading
     return;
   }
 
-  // send packet
-  LoRa.beginPacket();
-  LoRa.print("01;");
-  LoRa.print(bme680.sensor_result_value.temperature); // In C
-  LoRa.print(";");
-  LoRa.print(bme680.sensor_result_value.pressure / 100); // In hpa
-  LoRa.print(";");
-  LoRa.print(bme680.sensor_result_value.humidity); // In %
-  LoRa.print(";");
-  LoRa.print(SI1145.ReadVisible()); // Visible light in lm (lumen)
-  LoRa.print(";");
-  LoRa.print(SI1145.ReadIR()); // Infrared light in lm
-  LoRa.print(";");
-  LoRa.print((float)SI1145.ReadUV()/100); // Ultraviolet light in lm
-  LoRa.print(";");
-  LoRa.print(analogRead(sensorPin)); // Analog moisture sensor. Values between 0 - 1023
-  LoRa.print(";");
-  LoRa.endPacket();
+  temperature = bme680.sensor_result_value.temperature; // In C
+  pressure = bme680.sensor_result_value.pressure / 100; // In hpa
+  humidity = bme680.sensor_result_value.humidity; // In %
+  visibleLight = SI1145.ReadVisible(); // Visible light in lm (lumen)
+  irLight = SI1145.ReadIR(); // Infrared light in lm
+  uvLight = (float)SI1145.ReadUV() / 100; // Ultraviolet light in lm
+  moisture = analogRead(sensorPin); // Analog moisture sensor. Values between 0 - 1023
 
-  delay(5000);
+  // send packet x times
+  for (int c = 0; c < SENDXTIMES; c++) {
+    LoRa.beginPacket();
+    LoRa.print(STATIONID);
+    LoRa.print(";");
+    LoRa.print(temperature);
+    LoRa.print(";");
+    LoRa.print(pressure);
+    LoRa.print(";");
+    LoRa.print(humidity);
+    LoRa.print(";");
+    LoRa.print(visibleLight);
+    LoRa.print(";");
+    LoRa.print(irLight);
+    LoRa.print(";");
+    LoRa.print(uvLight);
+    LoRa.print(";");
+    LoRa.print(moisture);
+    LoRa.print(";");
+    LoRa.endPacket();
+
+    delay(200);
+  }
+
+  delay(SLEEPTIME);
 }
