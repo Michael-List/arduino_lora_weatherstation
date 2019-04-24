@@ -23,11 +23,18 @@ int moisture;
 static int SENDXTIMES = 3;
 static int SLEEPTIME = 5000; // Sleeptime in ms
 static char STATIONID[] = "01";
+static int DATALENGTH = 52;
+String loraData;
 
 void setup() {
 // For debugging
 //  Serial.begin(9600);
 //  while (!Serial);
+
+  LoRa.setTxPower(17);
+  LoRa.setSpreadingFactor(7);
+  LoRa.setCodingRate4(5);
+  LoRa.disableCrc();
 
   while (!LoRa.begin(frequency)) {
 //  If init failed, wait and try again
@@ -60,25 +67,39 @@ void loop() {
   uvLight = (float)SI1145.ReadUV() / 100; // Ultraviolet light in lm
   moisture = analogRead(sensorPin); // Analog moisture sensor. Values between 0 - 1023
 
+  // Build lora data package
+  loraData = STATIONID;
+  loraData += ";";
+  loraData += temperature;
+  loraData += ";";
+  loraData += pressure;
+  loraData += ";";
+  loraData += humidity;
+  loraData += ";";
+  loraData += visibleLight;
+  loraData += ";";
+  loraData += irLight;
+  loraData += ";";
+  loraData += uvLight;
+  loraData += ";";
+  loraData += moisture;
+  loraData += ";";
+//  Serial.println(loraData);
+//  Serial.print("String length before filling: ");
+//  Serial.println(loraData.length());
+
+  for (int c = loraData.length(); c < DATALENGTH; c++) {
+    loraData += "X";
+  }
+
+//  Serial.println(loraData);
+//  Serial.print("String length after filling: ");
+//  Serial.println(loraData.length());
+
   // send packet x times
   for (int c = 0; c < SENDXTIMES; c++) {
     LoRa.beginPacket();
-    LoRa.print(STATIONID);
-    LoRa.print(";");
-    LoRa.print(temperature);
-    LoRa.print(";");
-    LoRa.print(pressure);
-    LoRa.print(";");
-    LoRa.print(humidity);
-    LoRa.print(";");
-    LoRa.print(visibleLight);
-    LoRa.print(";");
-    LoRa.print(irLight);
-    LoRa.print(";");
-    LoRa.print(uvLight);
-    LoRa.print(";");
-    LoRa.print(moisture);
-    LoRa.print(";");
+    LoRa.print(loraData);
     LoRa.endPacket();
 
     delay(200);
