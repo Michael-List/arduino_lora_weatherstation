@@ -21,7 +21,7 @@ int moisture;
 
 // Other vars
 static int SENDXTIMES = 3;
-static int SLEEPTIME = 5000; // Sleeptime in ms
+static int SLEEPTIME = 900000; // Sleeptime in ms
 static char STATIONID[] = "01";
 static int DATALENGTH = 52;
 String loraData;
@@ -32,9 +32,9 @@ void setup() {
 //  while (!Serial);
 
   LoRa.setTxPower(17);
-  LoRa.setSpreadingFactor(7);
+  LoRa.setSpreadingFactor(8);
   LoRa.setCodingRate4(5);
-  LoRa.disableCrc();
+  LoRa.enableCrc();
 
   while (!LoRa.begin(frequency)) {
 //  If init failed, wait and try again
