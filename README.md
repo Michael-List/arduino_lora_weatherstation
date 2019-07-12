@@ -9,6 +9,7 @@
 * https://github.com/Seeed-Studio/Seeed_BME680
 * https://github.com/SeeedDocument/Grove-Sunlight_Sensor/
 * https://github.com/sandeepmistry/arduino-LoRa
+  * NOTE: Requires firmware v1.1.6 or later on the on-board Murata module. Please use the MKRWANFWUpdate_standalone example from latest MKRWAN library release to update the firmware.
 * https://github.com/arduino/ArduinoCore-samd (version 1.6.21)
 
 # Lora information
