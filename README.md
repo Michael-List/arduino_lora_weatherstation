@@ -9,6 +9,7 @@
 * https://github.com/Seeed-Studio/Seeed_BME680
 * https://github.com/SeeedDocument/Grove-Sunlight_Sensor/
 * https://github.com/sandeepmistry/arduino-LoRa
+* https://github.com/arduino/ArduinoCore-samd (version 1.6.21)
 
 # Lora information
 * LoRa lib default SF (spreading factor) is 7
