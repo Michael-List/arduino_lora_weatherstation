@@ -20,10 +20,14 @@ float uvLight;
 // Other vars
 static int SENDXTIMES = 3;
 static int SLEEPTIME = 900000; // Sleeptime in ms
+static bool SLEEPMODEON = false; // Turn "sleepmode" on which is just a delay
+static int POWEROFFPIN = 0; // Adafruit TPL5110 mode pin
 static char STATIONID[] = "01";
 String loraData;
 
 void setup() {
+  digitalWrite(POWEROFFPIN, LOW);
+  
 // For debugging
 //  Serial.begin(9600);
 //  while (!Serial);
@@ -88,5 +92,10 @@ void loop() {
     delay(200);
   }
 
-  delay(SLEEPTIME);
+  if (SLEEPMODEON) {
+    delay(SLEEPTIME);
+  }
+  else {
+    digitalWrite(POWEROFFPIN, HIGH);
+  }
 }
