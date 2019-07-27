@@ -7,7 +7,6 @@
 #define IIC_ADDR uint8_t(0x76) // Address of BME680 sensor
 Seeed_BME680 bme680(IIC_ADDR); // IIC PROTOCOL
 SI114X SI1145 = SI114X(); // Sunlight sensor
-static int sensorPin = A0; // Moisture sensor
 static int frequency = 868300000; // For the frequency you are allowed to use in your country look at: https://www.thethingsnetwork.org/docs/lorawan/frequency-plans.html
 
 // Sensor data
@@ -17,13 +16,11 @@ float humidity;
 float visibleLight;
 float irLight;
 float uvLight;
-int moisture;
 
 // Other vars
 static int SENDXTIMES = 3;
 static int SLEEPTIME = 900000; // Sleeptime in ms
 static char STATIONID[] = "01";
-static int DATALENGTH = 52;
 String loraData;
 
 void setup() {
@@ -65,7 +62,6 @@ void loop() {
   visibleLight = SI1145.ReadVisible(); // Visible light in lm (lumen)
   irLight = SI1145.ReadIR(); // Infrared light in lm
   uvLight = (float)SI1145.ReadUV() / 100; // Ultraviolet light in lm
-  moisture = analogRead(sensorPin); // Analog moisture sensor. Values between 0 - 1023
 
   // Build lora data package
   loraData = STATIONID;
@@ -81,20 +77,7 @@ void loop() {
   loraData += irLight;
   loraData += ";";
   loraData += uvLight;
-  loraData += ";";
-  loraData += moisture;
-  loraData += ";";
-//  Serial.println(loraData);
-//  Serial.print("String length before filling: ");
-//  Serial.println(loraData.length());
-
-  for (int c = loraData.length(); c < DATALENGTH; c++) {
-    loraData += "X";
-  }
-
-//  Serial.println(loraData);
-//  Serial.print("String length after filling: ");
-//  Serial.println(loraData.length());
+  loraData += ";;";
 
   // send packet x times
   for (int c = 0; c < SENDXTIMES; c++) {
