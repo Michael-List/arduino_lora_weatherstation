@@ -3,7 +3,6 @@
 # Used sensors
 * [Groove temperature, humidity, pressure and gas sensor (BME680) from Seeedstudio](http://wiki.seeedstudio.com/Grove-Temperature_Humidity_Pressure_Gas_Sensor_BME680/)
 * [Groove sunlight sensor (SI1145) from Seeedstudio](http://wiki.seeedstudio.com/Grove-Sunlight_Sensor/)
-* [Groove analog Moisture sensor from Seeedstudio](http://wiki.seeedstudio.com/Grove-Moisture_Sensor/)
 
 # Used libraries
 * https://github.com/Seeed-Studio/Seeed_BME680
@@ -19,7 +18,7 @@
 * Frequency is set to 868300000 -> 868.3 MHz
 
 # Send data format
-Example: 01;21.16;954.98;46.88;260;256;0.00;7;  
+Example: 01;21.16;954.98;46.88;260;256;0.00;;  
 The ; is a divider between the different values.  
 The values are in this order:
 * Station number
@@ -29,4 +28,3 @@ The values are in this order:
 * Visible light in lumen
 * Infrared light in lumen
 * Ultraviolet light in lumen
-* Analog moisture sensor
