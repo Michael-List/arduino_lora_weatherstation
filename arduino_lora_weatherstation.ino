@@ -7,7 +7,7 @@
 #define IIC_ADDR uint8_t(0x76) // Address of BME680 sensor
 Seeed_BME680 bme680(IIC_ADDR); // IIC PROTOCOL
 SI114X SI1145 = SI114X(); // Sunlight sensor
-static int frequency = 868300000; // For the frequency you are allowed to use in your country look at: https://www.thethingsnetwork.org/docs/lorawan/frequency-plans.html
+static int frequency = 868E6; // For the frequency you are allowed to use in your country look at: https://www.thethingsnetwork.org/docs/lorawan/frequency-plans.html
 
 // Sensor data
 float temperature;
@@ -32,15 +32,24 @@ void setup() {
 //  Serial.begin(9600);
 //  while (!Serial);
 
-  LoRa.setTxPower(17);
+  LoRa.setTxPower(20);
   LoRa.setSpreadingFactor(8);
+  LoRa.setSignalBandwidth(125E3);
   LoRa.setCodingRate4(5);
-  LoRa.enableCrc();
+  LoRa.setPreambleLength(8);
+  LoRa.setSyncWord(0x34);
 
   while (!LoRa.begin(frequency)) {
 //  If init failed, wait and try again
     delay(10000);
   }
+
+  LoRa.setTxPower(20);
+  LoRa.setSpreadingFactor(8);
+  LoRa.setSignalBandwidth(125E3);
+  LoRa.setCodingRate4(5);
+  LoRa.setPreambleLength(8);
+  LoRa.setSyncWord(0x34);
 
   while (!bme680.init()) {
 //  If init failed, wait and try again
@@ -68,7 +77,8 @@ void loop() {
   uvLight = (float)SI1145.ReadUV() / 100; // Ultraviolet light in lm
 
   // Build lora data package
-  loraData = STATIONID;
+  loraData = "<4567>";
+  loraData += STATIONID;
   loraData += ";";
   loraData += temperature;
   loraData += ";";
